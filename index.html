@@ -2,8 +2,8 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Painel de Fila Ambulatorial – Emerald Night</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Painel de Fila Ambulatorial</title>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -24,206 +24,239 @@
       --text-secondary: #9ca3af;
       --text-muted:     #6b7280;
       --danger:         #f87171;
-      --risk0:          #ef4444;
-      --risk1:          #f59e0b;
-      --risk2:          #10b981;
-      --risk3:          #3b82f6;
+      --risk0: #ef4444; --risk1: #f59e0b; --risk2: #10b981; --risk3: #3b82f6;
       --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
 
     body { font-family: var(--font); background: var(--bg-page); color: var(--text-primary); min-height: 100vh; }
 
-    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: var(--bg-page); }
     ::-webkit-scrollbar-thumb { background: var(--emerald-dark); border-radius: 3px; }
 
     /* ── HEADER ── */
     header {
       position: sticky; top: 0; z-index: 100;
-      background: rgba(5,8,22,0.95); backdrop-filter: blur(8px);
+      background: rgba(5,8,22,0.96); backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--emerald-border);
-      padding: 16px 32px; display: flex; align-items: center; gap: 14px;
+      padding: 14px 24px; display: flex; align-items: center; gap: 12px;
     }
     .header-icon {
-      width: 38px; height: 38px; background: var(--emerald-glow);
-      border: 1px solid var(--emerald-border); border-radius: 10px;
-      display: flex; align-items: center; justify-content: center; font-size: 18px;
-    }
-    .header-text h1 { font-size: 1.15rem; font-weight: 700; letter-spacing: 0.02em; }
-    .header-text p  { font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px; }
-    .header-badge {
-      margin-left: auto;
+      width: 36px; height: 36px; flex-shrink: 0;
       background: var(--emerald-glow); border: 1px solid var(--emerald-border);
-      color: var(--emerald); font-size: 0.7rem; font-weight: 600;
-      padding: 4px 10px; border-radius: 20px; letter-spacing: 0.05em;
+      border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 17px;
+    }
+    .header-text { min-width: 0; }
+    .header-text h1 { font-size: 1rem; font-weight: 700; letter-spacing: 0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .header-text p  { font-size: 0.72rem; color: var(--text-secondary); margin-top: 1px; }
+    .header-badge {
+      margin-left: auto; flex-shrink: 0;
+      background: var(--emerald-glow); border: 1px solid var(--emerald-border);
+      color: var(--emerald); font-size: 0.66rem; font-weight: 700;
+      padding: 3px 9px; border-radius: 20px; letter-spacing: 0.05em;
     }
 
-    main { max-width: 1400px; margin: 0 auto; padding: 32px 24px 64px; }
+    main { max-width: 1400px; margin: 0 auto; padding: 24px 16px 64px; }
 
     /* ── SECTION TITLE ── */
     .section-title {
-      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em;
       text-transform: uppercase; color: var(--emerald);
-      margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+      margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
     }
     .section-title::after { content: ''; flex: 1; height: 1px; background: var(--emerald-border); }
 
     /* ── UPLOAD ── */
-    .upload-section { margin-bottom: 36px; }
-    .upload-zone { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+    .upload-section { margin-bottom: 28px; }
+    .upload-zone { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
     .upload-btn {
-      position: relative; display: inline-flex; align-items: center; gap: 10px;
+      position: relative; display: inline-flex; align-items: center; gap: 8px;
       background: linear-gradient(135deg, var(--emerald-dark), var(--emerald));
-      color: #fff; font-weight: 600; font-size: 0.88rem;
-      padding: 12px 22px; border-radius: 10px; cursor: pointer; border: none;
+      color: #fff; font-weight: 600; font-size: 0.85rem;
+      padding: 11px 20px; border-radius: 10px; cursor: pointer; border: none;
       transition: opacity 0.2s, transform 0.1s;
-      box-shadow: 0 4px 20px rgba(16,185,129,0.3); white-space: nowrap;
+      box-shadow: 0 4px 18px rgba(16,185,129,0.3); white-space: nowrap;
     }
     .upload-btn:hover { opacity: 0.9; transform: translateY(-1px); }
     .upload-btn:active { transform: translateY(0); }
     .upload-btn input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-    .upload-info { display: flex; flex-direction: column; gap: 4px; }
-    .file-name { font-size: 0.85rem; color: var(--text-primary); font-weight: 500; }
-    .file-meta { font-size: 0.72rem; color: var(--text-secondary); }
+    .upload-info { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+    .file-name { font-size: 0.82rem; color: var(--text-primary); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px; }
+    .file-meta { font-size: 0.7rem; color: var(--text-secondary); }
+
+    /* Chip de arquivo restaurado */
+    .restore-chip {
+      display: none; align-items: center; gap: 7px;
+      background: rgba(16,185,129,0.08); border: 1px solid var(--emerald-border);
+      border-radius: 8px; padding: 7px 12px; font-size: 0.74rem; color: var(--text-secondary);
+      margin-top: 10px;
+    }
+    .restore-chip.show { display: flex; }
+    .restore-chip strong { color: var(--emerald); }
+    .restore-chip button {
+      margin-left: auto; background: none; border: none; cursor: pointer;
+      color: var(--text-muted); font-size: 0.8rem; padding: 0 4px;
+      transition: color 0.15s;
+    }
+    .restore-chip button:hover { color: var(--danger); }
+
     .error-msg {
-      margin-top: 12px; background: rgba(248,113,113,0.1);
+      margin-top: 10px; background: rgba(248,113,113,0.1);
       border: 1px solid rgba(248,113,113,0.3); border-radius: 8px;
-      padding: 10px 16px; font-size: 0.82rem; color: var(--danger); display: none;
+      padding: 9px 14px; font-size: 0.8rem; color: var(--danger); display: none;
     }
     .error-msg.show { display: block; }
 
     /* ── KPI CARDS ── */
-    .kpi-section { margin-bottom: 36px; }
+    .kpi-section { margin-bottom: 28px; }
     .kpi-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
     }
     .kpi-card {
       background: var(--bg-card); border: 1px solid var(--emerald-border);
-      border-radius: 14px; padding: 20px 18px;
+      border-radius: 14px; padding: 18px 16px;
       position: relative; overflow: hidden;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .kpi-card:hover { box-shadow: 0 0 20px var(--emerald-glow); }
+    .kpi-card:hover { box-shadow: 0 0 18px var(--emerald-glow); }
     .kpi-card::before {
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
       background: linear-gradient(90deg, var(--emerald-dark), var(--emerald));
       border-radius: 14px 14px 0 0;
     }
-    /* Risk-coloured top bars */
     .kpi-card[data-risk="0"]::before { background: linear-gradient(90deg,#b91c1c,#ef4444); }
-    .kpi-card[data-risk="0"]:hover   { border-color: var(--risk0); box-shadow: 0 0 20px rgba(239,68,68,0.2); }
+    .kpi-card[data-risk="0"]:hover   { border-color: var(--risk0); box-shadow: 0 0 18px rgba(239,68,68,0.2); }
     .kpi-card[data-risk="1"]::before { background: linear-gradient(90deg,#b45309,#f59e0b); }
-    .kpi-card[data-risk="1"]:hover   { border-color: var(--risk1); box-shadow: 0 0 20px rgba(245,158,11,0.2); }
+    .kpi-card[data-risk="1"]:hover   { border-color: var(--risk1); box-shadow: 0 0 18px rgba(245,158,11,0.2); }
     .kpi-card[data-risk="2"]::before { background: linear-gradient(90deg,#047857,#10b981); }
-    .kpi-card[data-risk="2"]:hover   { border-color: var(--risk2); box-shadow: 0 0 20px rgba(16,185,129,0.2); }
+    .kpi-card[data-risk="2"]:hover   { border-color: var(--risk2); box-shadow: 0 0 18px rgba(16,185,129,0.2); }
     .kpi-card[data-risk="3"]::before { background: linear-gradient(90deg,#1d4ed8,#3b82f6); }
-    .kpi-card[data-risk="3"]:hover   { border-color: var(--risk3); box-shadow: 0 0 20px rgba(59,130,246,0.2); }
+    .kpi-card[data-risk="3"]:hover   { border-color: var(--risk3); box-shadow: 0 0 18px rgba(59,130,246,0.2); }
 
-    .kpi-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 8px; }
-    .kpi-value { font-size: 2rem; font-weight: 800; color: var(--emerald); line-height: 1; letter-spacing: -0.02em; }
-    .kpi-value.empty { color: var(--text-muted); font-size: 1.4rem; font-weight: 400; }
-    .kpi-unit  { font-size: 0.72rem; color: var(--text-muted); margin-top: 6px; }
-    .kpi-icon  { position: absolute; top: 16px; right: 16px; font-size: 1.4rem; opacity: 0.22; }
-
-    /* risk value coloring */
+    .kpi-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 8px; }
+    .kpi-value { font-size: 1.9rem; font-weight: 800; color: var(--emerald); line-height: 1; letter-spacing: -0.02em; }
+    .kpi-value.empty { color: var(--text-muted); font-size: 1.3rem; font-weight: 400; }
+    .kpi-unit  { font-size: 0.68rem; color: var(--text-muted); margin-top: 5px; }
+    .kpi-icon  { position: absolute; top: 14px; right: 14px; font-size: 1.3rem; opacity: 0.2; }
     .kpi-card[data-risk="0"] .kpi-value { color: var(--risk0); }
     .kpi-card[data-risk="1"] .kpi-value { color: var(--risk1); }
     .kpi-card[data-risk="2"] .kpi-value { color: var(--risk2); }
     .kpi-card[data-risk="3"] .kpi-value { color: var(--risk3); }
 
-    /* risk mini bars inside card */
-    .risk-rows { margin-top: 10px; display: flex; flex-direction: column; gap: 5px; }
-    .risk-row  { display: flex; align-items: center; gap: 8px; font-size: 0.72rem; }
-    .risk-dot  { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
-    .risk-row-name  { color: var(--text-secondary); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .risk-row-count { color: var(--text-primary); font-weight: 600; }
-    .risk-row-pct   { color: var(--text-muted); font-size: 0.68rem; }
-
     /* ── CHARTS ── */
-    .charts-section { margin-bottom: 36px; }
-    .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    @media (max-width: 900px) { .charts-grid { grid-template-columns: 1fr; } }
-    .chart-card { background: var(--bg-card); border: 1px solid var(--emerald-border); border-radius: 14px; padding: 22px 20px; }
-    .chart-title { font-size: 0.78rem; font-weight: 700; color: var(--text-primary); margin-bottom: 18px; padding-bottom: 10px; border-bottom: 1px solid var(--emerald-border); }
+    .charts-section { margin-bottom: 28px; }
+    .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .chart-card { background: var(--bg-card); border: 1px solid var(--emerald-border); border-radius: 14px; padding: 18px 16px; min-width: 0; }
+    .chart-title { font-size: 0.75rem; font-weight: 700; color: var(--text-primary); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--emerald-border); }
     .chart-wrap { position: relative; width: 100%; }
     canvas { display: block; }
 
-    /* ── TABLE SECTION ── */
-    .table-section { margin-bottom: 36px; }
+    /* ── TABLE ── */
+    .table-section { margin-bottom: 28px; }
     .table-wrap { background: var(--bg-card); border: 1px solid var(--emerald-border); border-radius: 14px; overflow: hidden; }
 
-    /* Controls bar */
     .table-controls {
-      padding: 14px 18px; border-bottom: 1px solid var(--emerald-border);
-      display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+      padding: 12px 14px; border-bottom: 1px solid var(--emerald-border);
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
     }
-    .toggle-group { display: flex; background: var(--bg-card-alt); border: 1px solid var(--emerald-border); border-radius: 8px; overflow: hidden; }
+    .toggle-group { display: flex; background: var(--bg-card-alt); border: 1px solid var(--emerald-border); border-radius: 8px; overflow: hidden; flex-shrink: 0; }
     .toggle-btn {
-      padding: 7px 16px; font-size: 0.78rem; font-weight: 600; cursor: pointer;
+      padding: 7px 14px; font-size: 0.76rem; font-weight: 600; cursor: pointer;
       background: transparent; color: var(--text-secondary); border: none;
       transition: background 0.15s, color 0.15s; white-space: nowrap;
     }
     .toggle-btn.active { background: var(--emerald-glow); color: var(--emerald); }
     .toggle-btn:hover:not(.active) { color: var(--text-primary); background: rgba(255,255,255,0.04); }
 
-    .search-wrap { flex: 1; min-width: 200px; position: relative; }
-    .search-wrap::before { content: '🔍'; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 0.8rem; pointer-events: none; }
+    .search-wrap { flex: 1; min-width: 160px; position: relative; }
+    .search-wrap::before { content: '🔍'; position: absolute; left: 9px; top: 50%; transform: translateY(-50%); font-size: 0.75rem; pointer-events: none; }
     .search-input {
       width: 100%; background: var(--bg-card-alt); border: 1px solid var(--emerald-border);
-      border-radius: 8px; padding: 7px 12px 7px 30px;
-      color: var(--text-primary); font-size: 0.82rem; font-family: var(--font);
+      border-radius: 8px; padding: 7px 10px 7px 28px;
+      color: var(--text-primary); font-size: 0.8rem; font-family: var(--font);
       outline: none; transition: border-color 0.2s;
     }
     .search-input::placeholder { color: var(--text-muted); }
     .search-input:focus { border-color: var(--emerald); }
+    .table-count { font-size: 0.7rem; color: var(--text-muted); white-space: nowrap; margin-left: auto; }
 
-    .table-count { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; margin-left: auto; }
+    /* scroll horizontal na tabela em telas pequenas */
+    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
-    table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; min-width: 480px; }
     thead th {
-      background: var(--bg-card-alt); padding: 11px 14px; text-align: left;
-      font-size: 0.66rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
-      color: var(--emerald); border-bottom: 1px solid var(--emerald-border);
+      background: var(--bg-card-alt); padding: 10px 12px; text-align: left;
+      font-size: 0.63rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--emerald); border-bottom: 1px solid var(--emerald-border); white-space: nowrap;
     }
     tbody tr { border-bottom: 1px solid rgba(16,185,129,0.07); transition: background 0.15s; }
     tbody tr:last-child { border-bottom: none; }
     tbody tr:hover { background: rgba(16,185,129,0.05); }
-    tbody td { padding: 9px 14px; color: var(--text-primary); vertical-align: middle; }
+    tbody td { padding: 9px 12px; color: var(--text-primary); vertical-align: middle; }
 
     .rank-badge {
       display: inline-flex; align-items: center; justify-content: center;
-      width: 22px; height: 22px; border-radius: 6px;
-      font-size: 0.68rem; font-weight: 700; margin-right: 6px;
+      width: 20px; height: 20px; border-radius: 5px;
+      font-size: 0.65rem; font-weight: 700; margin-right: 5px; flex-shrink: 0;
     }
     .rank-1     { background: rgba(251,191,36,0.2);  color: #fbbf24; }
     .rank-2     { background: rgba(156,163,175,0.2); color: #9ca3af; }
     .rank-3     { background: rgba(180,83,9,0.2);    color: #b45309; }
     .rank-other { background: var(--emerald-glow);   color: var(--emerald); }
 
-    /* Risk pill inside table */
     .risk-pill {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 3px 8px; border-radius: 12px;
-      font-size: 0.7rem; font-weight: 600; white-space: nowrap;
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 7px; border-radius: 12px;
+      font-size: 0.68rem; font-weight: 600; white-space: nowrap;
     }
-    .risk-pill-dot { width: 7px; height: 7px; border-radius: 50%; }
+    .risk-pill-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
     .risk-pill-0 { background: rgba(239,68,68,0.15);   color: #ef4444; }
     .risk-pill-1 { background: rgba(245,158,11,0.15);  color: #f59e0b; }
     .risk-pill-2 { background: rgba(16,185,129,0.15);  color: #10b981; }
     .risk-pill-3 { background: rgba(59,130,246,0.15);  color: #3b82f6; }
     .risk-pill-null { background: rgba(107,114,128,0.15); color: #6b7280; }
 
-    /* ── EMPTY STATE ── */
-    .empty-state { text-align: center; padding: 48px 24px; color: var(--text-muted); }
-    .empty-state .icon { font-size: 2.5rem; margin-bottom: 12px; }
-    .empty-state p { font-size: 0.85rem; }
+    .empty-state { text-align: center; padding: 48px 20px; color: var(--text-muted); }
+    .empty-state .icon { font-size: 2.2rem; margin-bottom: 10px; }
+    .empty-state p { font-size: 0.83rem; }
 
+    /* ═══════════════════════════════════════
+       RESPONSIVIDADE
+    ═══════════════════════════════════════ */
+
+    /* Tablet */
+    @media (max-width: 900px) {
+      .charts-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Mobile grande */
     @media (max-width: 600px) {
-      header { padding: 14px 16px; }
-      main   { padding: 20px 14px 48px; }
-      .kpi-value { font-size: 1.7rem; }
+      header { padding: 12px 14px; gap: 10px; }
+      .header-text h1 { font-size: 0.88rem; }
+      .header-text p  { display: none; }
+
+      main { padding: 16px 12px 56px; }
+
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .kpi-value { font-size: 1.6rem; }
+      .kpi-icon  { display: none; }
+
+      .chart-wrap[style] { height: 200px !important; }
+
+      .table-controls { flex-direction: column; align-items: stretch; gap: 8px; }
+      .toggle-group   { width: 100%; }
+      .toggle-btn     { flex: 1; text-align: center; }
+      .search-wrap    { min-width: 0; }
+      .table-count    { margin-left: 0; text-align: right; }
+    }
+
+    /* Mobile pequeno */
+    @media (max-width: 400px) {
+      .kpi-grid { grid-template-columns: 1fr 1fr; }
+      .kpi-value { font-size: 1.4rem; }
+      .kpi-label { font-size: 0.6rem; }
     }
   </style>
 </head>
@@ -253,6 +286,11 @@
         <div class="file-meta" id="fileMeta">Selecione um arquivo .xlsx para começar</div>
       </div>
     </div>
+    <!-- Indicador de arquivo restaurado do cache -->
+    <div class="restore-chip" id="restoreChip">
+      💾 Restaurado automaticamente: <strong id="restoreName"></strong>&nbsp;·&nbsp;<span id="restoreDate"></span>
+      <button onclick="clearSavedFile()" title="Remover arquivo salvo">✕</button>
+    </div>
     <div class="error-msg" id="errorMsg"></div>
   </section>
 
@@ -260,55 +298,42 @@
   <section class="kpi-section">
     <div class="section-title">Indicadores Gerais</div>
     <div class="kpi-grid">
-
-      <!-- Card 1: Tempo médio -->
       <div class="kpi-card">
         <div class="kpi-label">Tempo Médio de Espera</div>
         <div class="kpi-value empty" id="kpiMean">—</div>
         <div class="kpi-unit">dias (média)</div>
         <div class="kpi-icon">⏱</div>
       </div>
-
-      <!-- Card 2: Total -->
       <div class="kpi-card">
         <div class="kpi-label">Total de Solicitações</div>
         <div class="kpi-value empty" id="kpiTotal">—</div>
         <div class="kpi-unit">registros carregados</div>
         <div class="kpi-icon">📋</div>
       </div>
-
-      <!-- Card 3: Risco 0 – Emergência (vermelho) -->
       <div class="kpi-card" data-risk="0">
         <div class="kpi-label">🔴 P0 – Emergência</div>
         <div class="kpi-value empty" id="kpiR0">—</div>
         <div class="kpi-unit" id="kpiR0pct">atendimento imediato</div>
         <div class="kpi-icon">🚨</div>
       </div>
-
-      <!-- Card 4: Risco 1 – Urgência (amarelo) -->
       <div class="kpi-card" data-risk="1">
         <div class="kpi-label">🟡 P1 – Urgência</div>
         <div class="kpi-value empty" id="kpiR1">—</div>
         <div class="kpi-unit" id="kpiR1pct">o mais rápido possível</div>
         <div class="kpi-icon">⚡</div>
       </div>
-
-      <!-- Card 5: Risco 2 – Não Urgente (verde) -->
       <div class="kpi-card" data-risk="2">
         <div class="kpi-label">🟢 P2 – Não Urgente</div>
         <div class="kpi-value empty" id="kpiR2">—</div>
         <div class="kpi-unit" id="kpiR2pct">prioridade não urgente</div>
         <div class="kpi-icon">✅</div>
       </div>
-
-      <!-- Card 6: Risco 3 – Eletivo (azul) -->
       <div class="kpi-card" data-risk="3">
         <div class="kpi-label">🔵 P3 – Eletivo</div>
         <div class="kpi-value empty" id="kpiR3">—</div>
         <div class="kpi-unit" id="kpiR3pct">atendimento eletivo</div>
         <div class="kpi-icon">📅</div>
       </div>
-
     </div>
   </section>
 
@@ -316,39 +341,22 @@
   <section class="charts-section">
     <div class="section-title">Visualizações</div>
     <div class="charts-grid">
-
-      <!-- Gráfico 1: Faixas de dias em espera -->
       <div class="chart-card">
         <div class="chart-title">📅 Distribuição por Faixa de Dias em Espera</div>
-        <div class="chart-wrap" style="height:260px">
-          <canvas id="chartFaixas"></canvas>
-        </div>
+        <div class="chart-wrap" style="height:260px"><canvas id="chartFaixas"></canvas></div>
       </div>
-
-      <!-- Gráfico 2: Média de dias por faixa de risco -->
       <div class="chart-card">
         <div class="chart-title">🎯 Média de Dias em Espera por Faixa de Risco</div>
-        <div class="chart-wrap" style="height:260px">
-          <canvas id="chartRisco"></canvas>
-        </div>
+        <div class="chart-wrap" style="height:260px"><canvas id="chartRisco"></canvas></div>
       </div>
-
-      <!-- Gráfico 3: Quantidade por procedimento -->
       <div class="chart-card">
         <div class="chart-title">🔢 Quantidade de Pacientes por Procedimento</div>
-        <div class="chart-wrap" style="height:260px">
-          <canvas id="chartProcQtd"></canvas>
-        </div>
+        <div class="chart-wrap" style="height:260px"><canvas id="chartProcQtd"></canvas></div>
       </div>
-
-      <!-- Gráfico 4: Faixa etária dentro de cada grupo de risco -->
       <div class="chart-card">
         <div class="chart-title">👥 Faixa Etária por Grupo de Risco</div>
-        <div class="chart-wrap" style="height:260px">
-          <canvas id="chartEtarioRisco"></canvas>
-        </div>
+        <div class="chart-wrap" style="height:260px"><canvas id="chartEtarioRisco"></canvas></div>
       </div>
-
     </div>
   </section>
 
@@ -357,22 +365,23 @@
     <div class="section-title">Resumo Detalhado</div>
     <div class="table-wrap">
       <div class="table-controls">
-        <!-- Toggle de modo -->
         <div class="toggle-group">
           <button class="toggle-btn active" id="btnByProc" onclick="setView('proc')">Por Procedimento</button>
           <button class="toggle-btn"        id="btnByPat"  onclick="setView('patient')">Por Paciente</button>
         </div>
-        <!-- Barra de pesquisa -->
         <div class="search-wrap">
           <input type="text" class="search-input" id="tableSearch"
                  placeholder="Pesquisar por qualquer campo..." oninput="onSearch()" />
         </div>
         <span class="table-count" id="tableCount"></span>
       </div>
-      <div id="tableContainer">
-        <div class="empty-state">
-          <div class="icon">📂</div>
-          <p>Carregue uma planilha para visualizar os dados.</p>
+      <!-- wrapper com scroll horizontal para mobile -->
+      <div class="table-scroll">
+        <div id="tableContainer">
+          <div class="empty-state">
+            <div class="icon">📂</div>
+            <p>Carregue uma planilha para visualizar os dados.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -384,14 +393,11 @@
 /* ====================================================
    ESTADO GLOBAL
    ==================================================== */
-let allData    = [];   // linhas brutas lidas do Excel
-let procStats  = [];   // resumo por procedimento
-let viewMode   = 'proc'; // 'proc' | 'patient'
+let allData   = [];
+let procStats = [];
+let viewMode  = 'proc';
 let searchTerm = '';
 
-/* ====================================================
-   CONFIGURAÇÃO DE RISCOS
-   ==================================================== */
 const RISK_CFG = {
   0: { label: 'P0 – Emergência',  color: '#ef4444', dot: '#ef4444' },
   1: { label: 'P1 – Urgência',    color: '#f59e0b', dot: '#f59e0b' },
@@ -399,179 +405,207 @@ const RISK_CFG = {
   3: { label: 'P3 – Eletivo',     color: '#3b82f6', dot: '#3b82f6' },
 };
 
-/* ====================================================
-   PALETA GERAL
-   ==================================================== */
-const PALETTE = [
-  '#10b981','#059669','#34d399','#6ee7b7',
-  '#047857','#065f46','#a7f3d0','#0d9488',
-  '#14b8a6','#5eead4','#99f6e4','#d1fae5',
-];
+const PALETTE = ['#10b981','#059669','#34d399','#6ee7b7','#047857','#065f46','#a7f3d0','#0d9488','#14b8a6','#5eead4','#99f6e4','#d1fae5'];
+
+let charts   = { faixas: null, risco: null, procQtd: null, etarioRisco: null };
+const CANVAS_MAP = { faixas:'chartFaixas', risco:'chartRisco', procQtd:'chartProcQtd', etarioRisco:'chartEtarioRisco' };
 
 /* ====================================================
-   MAPA DE INSTÂNCIAS DE GRÁFICOS
+   INDEXEDDB — persiste o último arquivo carregado
    ==================================================== */
-let charts = { faixas: null, risco: null, procQtd: null, etarioRisco: null };
+const DB_NAME    = 'FilaAmbulatorialDB';
+const DB_VERSION = 1;
+const STORE_NAME = 'files';
 
-const CANVAS_MAP = {
-  faixas:       'chartFaixas',
-  risco:        'chartRisco',
-  procQtd:      'chartProcQtd',
-  etarioRisco:  'chartEtarioRisco',
-};
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = e => e.target.result.createObjectStore(STORE_NAME, { keyPath: 'id' });
+    req.onsuccess = e => resolve(e.target.result);
+    req.onerror   = e => reject(e.target.error);
+  });
+}
+
+async function saveFileToIDB(buffer, name) {
+  try {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, 'readwrite');
+      tx.objectStore(STORE_NAME).put({ id: 'lastFile', buffer, name, savedAt: Date.now() });
+      tx.oncomplete = resolve;
+      tx.onerror    = reject;
+    });
+  } catch (e) { console.warn('IDB save:', e); }
+}
+
+async function loadFileFromIDB() {
+  try {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const tx     = db.transaction(STORE_NAME, 'readonly');
+      const req    = tx.objectStore(STORE_NAME).get('lastFile');
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror   = () => resolve(null);
+    });
+  } catch (e) { return null; }
+}
+
+async function clearSavedFile() {
+  try {
+    const db = await openDB();
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    tx.objectStore(STORE_NAME).delete('lastFile');
+  } catch(e) {}
+  document.getElementById('restoreChip').classList.remove('show');
+  document.getElementById('fileName').textContent = 'Nenhum arquivo selecionado';
+  document.getElementById('fileMeta').textContent  = 'Selecione um arquivo .xlsx para começar';
+}
 
 /* ====================================================
-   LEITURA DO ARQUIVO EXCEL
+   INICIALIZAÇÃO — tenta restaurar o último arquivo
    ==================================================== */
-document.getElementById('fileInput').addEventListener('change', function (e) {
+window.addEventListener('DOMContentLoaded', async () => {
+  const saved = await loadFileFromIDB();
+  if (!saved) return;
+
+  /* Exibe chip de restauração */
+  const chip = document.getElementById('restoreChip');
+  document.getElementById('restoreName').textContent = saved.name;
+  document.getElementById('restoreDate').textContent  = formatDate(saved.savedAt);
+  chip.classList.add('show');
+
+  document.getElementById('fileName').textContent = saved.name;
+  document.getElementById('fileMeta').textContent  = 'Restaurando arquivo salvo…';
+
+  await processFileBuffer(saved.buffer, saved.name);
+});
+
+function formatDate(ts) {
+  const d = new Date(ts);
+  return d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+}
+
+/* ====================================================
+   LEITURA DO ARQUIVO EXCEL (input manual)
+   ==================================================== */
+document.getElementById('fileInput').addEventListener('change', async function (e) {
   const file = e.target.files[0];
   if (!file) return;
-
-  document.getElementById('fileName').textContent = file.name;
-  document.getElementById('fileMeta').textContent = `${(file.size / 1024).toFixed(1)} KB · carregando...`;
   hideError();
+  document.getElementById('restoreChip').classList.remove('show');
+  document.getElementById('fileName').textContent = file.name;
+  document.getElementById('fileMeta').textContent  = `${(file.size/1024).toFixed(1)} KB · carregando…`;
 
   const reader = new FileReader();
-
-  reader.onload = async function (evt) {
-    try {
-      const buffer  = evt.target.result;                          // ArrayBuffer
-      const uint8   = new Uint8Array(buffer);
-
-      /* ── SheetJS: lê dados tabulares ── */
-      const workbook = XLSX.read(uint8, { type: 'array', cellDates: true });
-      const sheet    = workbook.Sheets[workbook.SheetNames[0]];
-      const raw      = XLSX.utils.sheet_to_json(sheet, { defval: null });
-
-      const REQUIRED = ['Cód. Solicitação','Data da Solicitação','Risco','Paciente','Idade Paciente','Procedimento','CID','Dias em Espera'];
-      if (raw.length === 0) { showError('A planilha está vazia.'); return; }
-      const missing = REQUIRED.filter(c => !Object.keys(raw[0]).includes(c));
-      if (missing.length) { showError(`Colunas não encontradas: ${missing.join(', ')}`); return; }
-
-      /* ── JSZip: mapeia ícones de risco (Rich Values do Excel 365) ── */
-      const vmRiskMap = await buildVmRiskMap(buffer);
-
-      /* Descobre a coluna Risco para extrair o atributo VM de cada célula */
-      const firstRowArr = XLSX.utils.sheet_to_json(sheet, { header: 1 })[0];
-      const riscoColIdx = firstRowArr.indexOf('Risco');
-      const sheetRange  = XLSX.utils.decode_range(sheet['!ref']);
-
-      raw.forEach((row, i) => {
-        /* row i → linha Excel i+2 (linha 1=cabeçalho, +1 base-1) */
-        const cellAddr = XLSX.utils.encode_cell({ r: sheetRange.s.r + 1 + i, c: riscoColIdx });
-        const cell     = sheet[cellAddr];
-        /* SheetJS expõe o índice de valor-metadata na propriedade VM */
-        const vm       = cell?.VM;
-        row._riskLevel = (vm != null && vmRiskMap[vm] != null) ? vmRiskMap[vm] : null;
-      });
-
-      allData = raw.filter(r => r['Cód. Solicitação'] !== null || r['Paciente'] !== null);
-      document.getElementById('fileMeta').textContent =
-        `${(file.size / 1024).toFixed(1)} KB · ${allData.length} registros`;
-
-      processData(allData);
-    } catch (err) {
-      showError('Erro ao processar: ' + err.message);
-      console.error(err);
-    }
+  reader.onload = async evt => {
+    const buffer = evt.target.result;
+    await saveFileToIDB(buffer.slice(0), file.name); // salva cópia no IDB
+    await processFileBuffer(buffer, file.name);
   };
-
   reader.readAsArrayBuffer(file);
 });
 
 /* ====================================================
+   PROCESSAMENTO CENTRAL DO BUFFER EXCEL
+   (usado tanto no upload manual quanto na restauração)
+   ==================================================== */
+async function processFileBuffer(buffer, fileName) {
+  try {
+    const uint8    = new Uint8Array(buffer);
+    const workbook = XLSX.read(uint8, { type: 'array', cellDates: true });
+    const sheet    = workbook.Sheets[workbook.SheetNames[0]];
+    const raw      = XLSX.utils.sheet_to_json(sheet, { defval: null });
+
+    const REQUIRED = ['Cód. Solicitação','Data da Solicitação','Risco','Paciente','Idade Paciente','Procedimento','CID','Dias em Espera'];
+    if (raw.length === 0) { showError('A planilha está vazia.'); return; }
+    const missing = REQUIRED.filter(c => !Object.keys(raw[0]).includes(c));
+    if (missing.length) { showError(`Colunas não encontradas: ${missing.join(', ')}`); return; }
+
+    /* Detecta ícones de risco via imagens PNG embutidas (Excel 365 Rich Values) */
+    const vmRiskMap   = await buildVmRiskMap(buffer);
+    const firstRowArr = XLSX.utils.sheet_to_json(sheet, { header: 1 })[0];
+    const riscoColIdx = firstRowArr.indexOf('Risco');
+    const sheetRange  = XLSX.utils.decode_range(sheet['!ref']);
+
+    raw.forEach((row, i) => {
+      const cellAddr = XLSX.utils.encode_cell({ r: sheetRange.s.r + 1 + i, c: riscoColIdx });
+      const cell     = sheet[cellAddr];
+      const vm       = cell?.VM;
+      row._riskLevel = (vm != null && vmRiskMap[vm] != null) ? vmRiskMap[vm] : null;
+    });
+
+    allData = raw.filter(r => r['Cód. Solicitação'] !== null || r['Paciente'] !== null);
+    const kb = (buffer.byteLength / 1024).toFixed(1);
+    document.getElementById('fileName').textContent = fileName;
+    document.getElementById('fileMeta').textContent  = `${kb} KB · ${allData.length} registros`;
+
+    processData(allData);
+  } catch (err) {
+    showError('Erro ao processar: ' + err.message);
+    console.error(err);
+  }
+}
+
+/* ====================================================
    EXTRAI MAPEAMENTO VM → NÍVEL DE RISCO
-   Lê as imagens embutidas no xlsx (Rich Values do Excel 365),
-   amostra a cor dominante via Canvas e converte para 0/1/2/3.
+   (imagens PNG embutidas nos Rich Values do Excel 365)
    ==================================================== */
 async function buildVmRiskMap(arrayBuffer) {
   const vmRisk = {};
   try {
     const zip = await JSZip.loadAsync(arrayBuffer);
 
-    /* 1) richValueRel.xml: lista ordenada de rIds (índice 0-based = LocalImageIdentifier) */
-    const rvRelXml  = await zip.file('xl/richData/richValueRel.xml')?.async('text');
+    const rvRelXml = await zip.file('xl/richData/richValueRel.xml')?.async('text');
     if (!rvRelXml) return vmRisk;
     const rvRelRIds = [...rvRelXml.matchAll(/r:id="(rId\d+)"/g)].map(m => m[1]);
 
-    /* 2) _rels: rId → caminho da imagem */
-    const relsXml   = await zip.file('xl/richData/_rels/richValueRel.xml.rels')?.async('text');
+    const relsXml  = await zip.file('xl/richData/_rels/richValueRel.xml.rels')?.async('text');
     if (!relsXml) return vmRisk;
     const rIdToPath = {};
-    for (const m of relsXml.matchAll(/Id="(rId\d+)"[^>]+Target="([^"]+)"/g)) {
-      /* normaliza: "../media/image1.png" → "xl/media/image1.png" */
+    for (const m of relsXml.matchAll(/Id="(rId\d+)"[^>]+Target="([^"]+)"/g))
       rIdToPath[m[1]] = 'xl/' + m[2].replace(/^\.\.\//, '');
-    }
 
-    /* 3) rdrichvalue.xml: richValue index → primeiro <v> = LocalImageIdentifier */
-    const rvXml       = await zip.file('xl/richData/rdrichvalue.xml')?.async('text');
-    const rvLocalIds  = [...(rvXml || '').matchAll(/<rv[^>]*><v>(\d+)<\/v>/g)]
-                          .map(m => parseInt(m[1]));
+    const rvXml      = await zip.file('xl/richData/rdrichvalue.xml')?.async('text');
+    const rvLocalIds = [...(rvXml||'').matchAll(/<rv[^>]*><v>(\d+)<\/v>/g)].map(m => parseInt(m[1]));
 
-    /* 4) metadata.xml: VM (1-based) → richValue index (v=) */
-    const metaXml  = await zip.file('xl/metadata.xml')?.async('text');
-    const vmToRv   = [null]; // posição 0 não usada; VM é 1-based
-    for (const m of (metaXml || '').matchAll(/<rc[^>]+v="(\d+)"/g)) {
-      vmToRv.push(parseInt(m[1]));
-    }
+    const metaXml = await zip.file('xl/metadata.xml')?.async('text');
+    const vmToRv  = [null];
+    for (const m of (metaXml||'').matchAll(/<rc[^>]+v="(\d+)"/g)) vmToRv.push(parseInt(m[1]));
 
-    /* 5) Para cada VM, localiza a imagem e amostra a cor */
     for (let vm = 1; vm < vmToRv.length; vm++) {
-      const rvIdx    = vmToRv[vm];
-      const localId  = rvLocalIds[rvIdx];
-      const rId      = rvRelRIds[localId];
-      const imgPath  = rIdToPath[rId];
+      const imgPath = rIdToPath[rvRelRIds[rvLocalIds[vmToRv[vm]]]];
       if (!imgPath) continue;
-
-      const imgFile  = zip.file(imgPath);
+      const imgFile = zip.file(imgPath);
       if (!imgFile) continue;
-
-      const b64      = await imgFile.async('base64');
-      vmRisk[vm]     = await detectRiskFromImage(b64);
+      vmRisk[vm] = await detectRiskFromImage(await imgFile.async('base64'));
     }
-  } catch (err) {
-    console.warn('buildVmRiskMap:', err);
-  }
+  } catch (err) { console.warn('buildVmRiskMap:', err); }
   return vmRisk;
 }
 
-/* ====================================================
-   DETECTA NÍVEL DE RISCO PELA COR DOMINANTE DA IMAGEM
-   Amostra pixels centrais em canvas 20×20 e classifica:
-     0 = vermelho  → P0 Emergência
-     1 = amarelo   → P1 Urgência
-     2 = verde     → P2 Não Urgente
-     3 = azul      → P3 Eletivo
-   ==================================================== */
+/* Amostra cor dominante da imagem e retorna nível de risco */
 function detectRiskFromImage(base64) {
   return new Promise(resolve => {
     const img = new Image();
     img.onload = () => {
-      const SIZE = 20;
-      const cv   = document.createElement('canvas');
-      cv.width   = SIZE; cv.height = SIZE;
-      const ctx  = cv.getContext('2d');
+      const SIZE = 20, cv = document.createElement('canvas');
+      cv.width = cv.height = SIZE;
+      const ctx = cv.getContext('2d');
       ctx.drawImage(img, 0, 0, SIZE, SIZE);
-
-      /* Amostra região central 10×10 ignorando pixels brancos/transparentes */
-      let rSum = 0, gSum = 0, bSum = 0, n = 0;
-      const start = Math.floor(SIZE * 0.25), end = Math.floor(SIZE * 0.75);
-      for (let x = start; x < end; x++) {
-        for (let y = start; y < end; y++) {
-          const [r, g, b, a] = ctx.getImageData(x, y, 1, 1).data;
-          if (a < 50 || (r > 220 && g > 220 && b > 220)) continue; // transparente ou branco
-          rSum += r; gSum += g; bSum += b; n++;
-        }
+      let rS=0, gS=0, bS=0, n=0;
+      const s = Math.floor(SIZE*0.25), e = Math.floor(SIZE*0.75);
+      for (let x=s; x<e; x++) for (let y=s; y<e; y++) {
+        const [r,g,b,a] = ctx.getImageData(x,y,1,1).data;
+        if (a<50||(r>220&&g>220&&b>220)) continue;
+        rS+=r; gS+=g; bS+=b; n++;
       }
-      if (n === 0) { resolve(null); return; }
-      const r = rSum / n, g = gSum / n, b = bSum / n;
-
-      /* Classificação pela cor dominante */
-      if (r > 160 && g < 120 && b < 120)           { resolve(0); return; } // vermelho → P0
-      if (r > 160 && g > 100 && b < 100)            { resolve(1); return; } // amarelo  → P1
-      if (g > 130 && r <= g  && b < g * 0.8)        { resolve(2); return; } // verde    → P2
-      if (b > 130 && r < b   && g < b * 1.1)        { resolve(3); return; } // azul     → P3
-      resolve(null);
+      if (!n) { resolve(null); return; }
+      const r=rS/n, g=gS/n, b=bS/n;
+      if (r>160&&g<120&&b<120)         resolve(0); // vermelho
+      else if (r>160&&g>100&&b<100)    resolve(1); // amarelo
+      else if (g>130&&r<=g&&b<g*0.8)   resolve(2); // verde
+      else if (b>130&&r<b&&g<b*1.1)    resolve(3); // azul
+      else resolve(null);
     };
     img.onerror = () => resolve(null);
     img.src = 'data:image/png;base64,' + base64;
@@ -579,433 +613,246 @@ function detectRiskFromImage(base64) {
 }
 
 /* ====================================================
-   CONVERTE TEXTO DE IDADE PARA ANOS NUMÉRICOS
+   CONVERSÕES
    ==================================================== */
 function parseAge(text) {
   if (text == null) return null;
   const s = String(text).trim().toLowerCase();
-  const m = s.match(/^(\d+)\s*(m[eê]s|meses)/);
-  if (m) return parseInt(m[1], 10) / 12;
-  const a = s.match(/^(\d+)\s*anos?/);
-  if (a) return parseInt(a[1], 10);
+  const m = s.match(/^(\d+)\s*(m[eê]s|meses)/);  if (m) return parseInt(m[1])/12;
+  const a = s.match(/^(\d+)\s*anos?/);             if (a) return parseInt(a[1]);
   return null;
 }
-
 function ageGroup(y) {
-  if (y === null) return null;
-  if (y < 18)  return 'Pediátrico';
-  if (y < 60)  return 'Adulto';
-  return 'Idoso';
+  if (y===null) return null;
+  return y<18 ? 'Pediátrico' : y<60 ? 'Adulto' : 'Idoso';
 }
 
-/* ====================================================
-   RETORNA O NÍVEL DE RISCO DE UM REGISTRO
-   Ordem de prioridade:
-     1. Coluna "cor" (texto em português adicionado pelo usuário)
-     2. _riskLevel   (detectado pelas imagens PNG embutidas via JSZip)
-     3. Coluna "Risco" (texto/número para arquivos sem rich values)
-   ==================================================== */
 function parseRisco(row) {
-  /* 1. Coluna "cor" — mais confiável quando presente */
+  /* 1. Coluna "cor" adicionada pelo usuário */
   const cor = row['cor'];
   if (cor != null) {
-    const c = String(cor).trim().toLowerCase()
-      .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    if (c === 'vermelho' || c === 'red')   return 0; // P0 Emergência
-    if (c === 'amarelo'  || c === 'yellow') return 1; // P1 Urgência
-    if (c === 'verde'    || c === 'green')  return 2; // P2 Não Urgente
-    if (c === 'azul'     || c === 'blue')   return 3; // P3 Eletivo
+    const c = String(cor).trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    if (c==='vermelho'||c==='red')    return 0;
+    if (c==='amarelo'||c==='yellow')  return 1;
+    if (c==='verde'||c==='green')     return 2;
+    if (c==='azul'||c==='blue')       return 3;
   }
-
-  /* 2. _riskLevel — detectado pelas bolinhas PNG embutidas (Excel 365) */
+  /* 2. Detectado pelas imagens PNG embutidas */
   if (row._riskLevel != null) return row._riskLevel;
-
-  /* 3. Fallback texto/número direto na coluna Risco */
+  /* 3. Fallback: texto na coluna Risco */
   const val = row['Risco'];
   if (val == null) return null;
-  const s = String(val).trim().toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const s = String(val).trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
   if (/emergenci|p\s*0|^0$|vermelho|red/.test(s))              return 0;
   if (/urgenci|p\s*1|^1$|amarelo|yellow/.test(s))              return 1;
-  if (/nao urgente|nao_urgente|p\s*2|^2$|verde|green/.test(s)) return 2;
+  if (/nao urgente|p\s*2|^2$|verde|green/.test(s))             return 2;
   if (/eletivo|p\s*3|^3$|azul|blue/.test(s))                   return 3;
   return null;
 }
 
 /* ====================================================
-   CÁLCULO DE MEDIANA
-   ==================================================== */
-function median(arr) {
-  if (!arr.length) return 0;
-  const s = [...arr].sort((a, b) => a - b);
-  const m = Math.floor(s.length / 2);
-  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
-}
-
-/* ====================================================
-   PROCESSAMENTO PRINCIPAL
+   PROCESSAMENTO PRINCIPAL DOS DADOS
    ==================================================== */
 function processData(data) {
-  const diasArr = data.map(r => Number(r['Dias em Espera'])).filter(d => !isNaN(d));
-  const mean    = diasArr.reduce((a, b) => a + b, 0) / (diasArr.length || 1);
-  const total   = data.length;
+  const diasArr  = data.map(r => Number(r['Dias em Espera'])).filter(d => !isNaN(d));
+  const mean     = diasArr.reduce((a,b)=>a+b,0) / (diasArr.length||1);
+  const riskCount = {0:0,1:0,2:0,3:0};
+  data.forEach(r => { const k=parseRisco(r); if(k!==null) riskCount[k]++; });
 
-  /* --- KPIs de risco --- */
-  const riskCount = { 0: 0, 1: 0, 2: 0, 3: 0 };
-  data.forEach(r => {
-    const k = parseRisco(r);
-    if (k !== null) riskCount[k]++;
-  });
+  updateKPIs(mean, data.length, riskCount);
 
-  updateKPIs(mean, total, riskCount);
-
-  /* --- Faixas de dias --- */
-  const faixas = { '0–30': 0, '31–60': 0, '61–90': 0, '>90': 0 };
+  /* Faixas de dias */
+  const faixas = {'0–30':0,'31–60':0,'61–90':0,'>90':0};
   diasArr.forEach(d => {
-    if      (d <= 30) faixas['0–30']++;
-    else if (d <= 60) faixas['31–60']++;
-    else if (d <= 90) faixas['61–90']++;
-    else              faixas['>90']++;
+    if(d<=30) faixas['0–30']++;
+    else if(d<=60) faixas['31–60']++;
+    else if(d<=90) faixas['61–90']++;
+    else faixas['>90']++;
   });
 
-  /* --- Média de dias por risco --- */
-  const riskDias = { 0: [], 1: [], 2: [], 3: [] };
-  data.forEach(r => {
-    const k = parseRisco(r);
-    const d = Number(r['Dias em Espera']);
-    if (k !== null && !isNaN(d)) riskDias[k].push(d);
-  });
-  const riskMedia = [0,1,2,3].map(k => {
-    const arr = riskDias[k];
-    return arr.length ? arr.reduce((a,b) => a+b, 0) / arr.length : 0;
-  });
+  /* Média de dias por risco */
+  const riskDias = {0:[],1:[],2:[],3:[]};
+  data.forEach(r => { const k=parseRisco(r); const d=Number(r['Dias em Espera']); if(k!==null&&!isNaN(d)) riskDias[k].push(d); });
+  const riskMedia = [0,1,2,3].map(k => { const a=riskDias[k]; return a.length ? a.reduce((x,y)=>x+y,0)/a.length : 0; });
 
-  /* --- Agrupamento por procedimento --- */
+  /* Por procedimento */
   const byProc = {};
   data.forEach(r => {
-    const p = r['Procedimento'] || 'Não informado';
+    const p = r['Procedimento']||'Não informado';
     const d = Number(r['Dias em Espera']);
-    if (!byProc[p]) byProc[p] = { qtd: 0, total: 0 };
+    if (!byProc[p]) byProc[p] = {qtd:0, total:0};
     byProc[p].qtd++;
     if (!isNaN(d)) byProc[p].total += d;
   });
-  procStats = Object.entries(byProc).map(([nome, v]) => ({
-    nome, qtd: v.qtd, media: v.qtd ? v.total / v.qtd : 0,
-  }));
-  const procByQtd = [...procStats].sort((a, b) => b.qtd - a.qtd);
+  procStats = Object.entries(byProc).map(([nome,v]) => ({ nome, qtd:v.qtd, media: v.qtd ? v.total/v.qtd : 0 }));
 
-  /* --- Faixa etária dentro de cada grupo de risco --- */
-  // estrutura: { risco: { 'Pediátrico': N, 'Adulto': N, 'Idoso': N } }
-  const etarioRisco = {
-    0: { 'Pediátrico': 0, 'Adulto': 0, 'Idoso': 0 },
-    1: { 'Pediátrico': 0, 'Adulto': 0, 'Idoso': 0 },
-    2: { 'Pediátrico': 0, 'Adulto': 0, 'Idoso': 0 },
-    3: { 'Pediátrico': 0, 'Adulto': 0, 'Idoso': 0 },
-  };
+  /* Faixa etária × risco */
+  const etarioRisco = {0:{P:0,A:0,I:0},1:{P:0,A:0,I:0},2:{P:0,A:0,I:0},3:{P:0,A:0,I:0}};
+  const MAP_GRP = {'Pediátrico':'P','Adulto':'A','Idoso':'I'};
   data.forEach(r => {
-    const k    = parseRisco(r);
-    const grp  = ageGroup(parseAge(r['Idade Paciente']));
-    if (k !== null && grp) etarioRisco[k][grp]++;
+    const k=parseRisco(r); const g=ageGroup(parseAge(r['Idade Paciente']));
+    if(k!==null&&g) etarioRisco[k][MAP_GRP[g]]++;
   });
 
-  /* --- Renderiza tudo --- */
   renderChartFaixas(faixas);
   renderChartRisco(riskMedia);
-  renderChartProcQtd(procByQtd);
+  renderChartProcQtd([...procStats].sort((a,b)=>b.qtd-a.qtd));
   renderChartEtarioRisco(etarioRisco);
   renderTable();
 }
 
 /* ====================================================
-   ATUALIZA KPI CARDS
+   KPI CARDS
    ==================================================== */
 function updateKPIs(mean, total, riskCount) {
-  const setVal = (id, v) => {
-    const el = document.getElementById(id);
-    el.textContent = v;
-    el.classList.remove('empty');
-  };
-  setVal('kpiMean',  mean.toFixed(1));
-  setVal('kpiTotal', total);
-
-  const tot = total || 1;
+  const set = (id, v) => { const el=document.getElementById(id); el.textContent=v; el.classList.remove('empty'); };
+  set('kpiMean', mean.toFixed(1));
+  set('kpiTotal', total);
+  const tot = total||1;
   [0,1,2,3].forEach(k => {
-    const cnt = riskCount[k];
-    const pct = ((cnt / tot) * 100).toFixed(1);
-    setVal(`kpiR${k}`, cnt);
+    const cnt=riskCount[k], pct=((cnt/tot)*100).toFixed(1);
+    set(`kpiR${k}`, cnt);
     document.getElementById(`kpiR${k}pct`).textContent =
-      cnt > 0 ? `${pct}% do total` : RISK_CFG[k].label.split('–')[1].trim().toLowerCase();
+      cnt>0 ? `${pct}% do total` : RISK_CFG[k].label.split('–')[1].trim().toLowerCase();
   });
 }
 
 /* ====================================================
-   HELPER: destrói canvas antigo e retorna novo contexto
+   HELPER CANVAS
    ==================================================== */
 function freshCanvas(key) {
-  if (charts[key]) { charts[key].destroy(); charts[key] = null; }
-  const canvasId = CANVAS_MAP[key];
-  const old      = document.getElementById(canvasId);
-  const neo      = document.createElement('canvas');
-  neo.id         = canvasId;
-  neo.style.cssText = 'width:100%;height:100%';
+  if (charts[key]) { charts[key].destroy(); charts[key]=null; }
+  const old = document.getElementById(CANVAS_MAP[key]);
+  const neo = document.createElement('canvas');
+  neo.id = old.id; neo.style.cssText='width:100%;height:100%';
   old.replaceWith(neo);
   return neo.getContext('2d');
 }
 
 /* ====================================================
-   GRÁFICO 1 – Faixas de dias de espera
+   GRÁFICOS
    ==================================================== */
 function renderChartFaixas(faixas) {
-  const ctx = freshCanvas('faixas');
-  charts.faixas = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: Object.keys(faixas),
-      datasets: [{ label: 'Pacientes', data: Object.values(faixas),
-        backgroundColor: ['#10b981','#059669','#047857','#065f46'],
-        borderRadius: 6, borderSkipped: false }],
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false },
-        tooltip: { callbacks: { label: c => ` ${c.raw} pacientes` } } },
-      scales: {
-        x: { ticks: { color: '#9ca3af' }, grid: { color: 'rgba(16,185,129,0.08)' } },
-        y: { beginAtZero: true, ticks: { color: '#9ca3af' }, grid: { color: 'rgba(16,185,129,0.08)' } },
-      },
-    },
+  charts.faixas = new Chart(freshCanvas('faixas'), {
+    type:'bar',
+    data:{ labels:Object.keys(faixas), datasets:[{ label:'Pacientes', data:Object.values(faixas),
+      backgroundColor:['#10b981','#059669','#047857','#065f46'], borderRadius:6, borderSkipped:false }] },
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>` ${c.raw} pacientes`}} },
+      scales:{ x:{ticks:{color:'#9ca3af'},grid:{color:'rgba(16,185,129,0.08)'}},
+               y:{beginAtZero:true,ticks:{color:'#9ca3af'},grid:{color:'rgba(16,185,129,0.08)'}} } },
   });
 }
 
-/* ====================================================
-   GRÁFICO 2 – Média de dias em espera por faixa de risco
-   ==================================================== */
 function renderChartRisco(riskMedia) {
-  const ctx    = freshCanvas('risco');
-  const labels = ['🔴 P0 Emergência','🟡 P1 Urgência','🟢 P2 Não Urgente','🔵 P3 Eletivo'];
-  const colors = ['#ef4444','#f59e0b','#10b981','#3b82f6'];
-  charts.risco = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [{ label: 'Média (dias)', data: riskMedia.map(v => +v.toFixed(1)),
-        backgroundColor: colors.map(c => c + 'cc'),
-        borderColor: colors, borderWidth: 1.5,
-        borderRadius: 6, borderSkipped: false }],
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false },
-        tooltip: { callbacks: { label: c => ` ${c.raw} dias em média` } } },
-      scales: {
-        x: { beginAtZero: true, ticks: { color: '#9ca3af' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-        y: { ticks: { color: '#9ca3af', font: { size: 10 } }, grid: { display: false } },
-      },
-    },
+  const labels=['🔴 P0 Emergência','🟡 P1 Urgência','🟢 P2 Não Urgente','🔵 P3 Eletivo'];
+  const colors=['#ef4444','#f59e0b','#10b981','#3b82f6'];
+  charts.risco = new Chart(freshCanvas('risco'), {
+    type:'bar',
+    data:{ labels, datasets:[{ label:'Média (dias)', data:riskMedia.map(v=>+v.toFixed(1)),
+      backgroundColor:colors.map(c=>c+'cc'), borderColor:colors, borderWidth:1.5, borderRadius:6, borderSkipped:false }] },
+    options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>` ${c.raw} dias em média`}} },
+      scales:{ x:{beginAtZero:true,ticks:{color:'#9ca3af'},grid:{color:'rgba(255,255,255,0.05)'}},
+               y:{ticks:{color:'#9ca3af',font:{size:10}},grid:{display:false}} } },
   });
 }
 
-/* ====================================================
-   GRÁFICO 3 – Quantidade por procedimento
-   ==================================================== */
 function renderChartProcQtd(procByQtd) {
-  const ctx = freshCanvas('procQtd');
-  const labels = procByQtd.map(p => abbrev(p.nome, 18));
-  charts.procQtd = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [{ label: 'Pacientes', data: procByQtd.map(p => p.qtd),
-        backgroundColor: procByQtd.map((_, i) => PALETTE[i % PALETTE.length]),
-        borderRadius: 4, borderSkipped: false }],
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false },
-        tooltip: { callbacks: {
-          title: items => procByQtd[items[0].dataIndex].nome,
-          label: c => ` ${c.raw} pacientes`,
-        } } },
-      scales: {
-        x: { ticks: { color: '#9ca3af', font: { size: 8 }, maxRotation: 45, minRotation: 30 }, grid: { display: false } },
-        y: { beginAtZero: true, ticks: { color: '#9ca3af' }, grid: { color: 'rgba(16,185,129,0.08)' } },
-      },
-    },
+  charts.procQtd = new Chart(freshCanvas('procQtd'), {
+    type:'bar',
+    data:{ labels:procByQtd.map(p=>abbrev(p.nome,18)),
+      datasets:[{ label:'Pacientes', data:procByQtd.map(p=>p.qtd),
+        backgroundColor:procByQtd.map((_,i)=>PALETTE[i%PALETTE.length]), borderRadius:4, borderSkipped:false }] },
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{callbacks:{
+        title:items=>procByQtd[items[0].dataIndex].nome, label:c=>` ${c.raw} pacientes` }} },
+      scales:{ x:{ticks:{color:'#9ca3af',font:{size:8},maxRotation:45,minRotation:30},grid:{display:false}},
+               y:{beginAtZero:true,ticks:{color:'#9ca3af'},grid:{color:'rgba(16,185,129,0.08)'}} } },
+  });
+}
+
+function renderChartEtarioRisco(er) {
+  const xLabels=['P0 Emergência','P1 Urgência','P2 Não Urgente','P3 Eletivo'];
+  const ageCfg=[{k:'P',label:'Pediátrico',color:'#34d399'},{k:'A',label:'Adulto',color:'#10b981'},{k:'I',label:'Idoso',color:'#047857'}];
+  charts.etarioRisco = new Chart(freshCanvas('etarioRisco'), {
+    type:'bar',
+    data:{ labels:xLabels, datasets:ageCfg.map(a=>({
+      label:a.label, data:[0,1,2,3].map(k=>er[k][a.k]),
+      backgroundColor:a.color+'cc', borderColor:a.color, borderWidth:1.5, borderRadius:5, borderSkipped:false })) },
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{labels:{color:'#9ca3af',font:{size:10},boxWidth:12}}, tooltip:{mode:'index',intersect:false} },
+      scales:{ x:{ticks:{color:'#9ca3af',font:{size:9}},grid:{color:'rgba(16,185,129,0.08)'}},
+               y:{beginAtZero:true,ticks:{color:'#9ca3af'},grid:{color:'rgba(16,185,129,0.08)'}} } },
   });
 }
 
 /* ====================================================
-   GRÁFICO 4 – Faixa etária por grupo de risco
-   Eixo X = grupos de risco | Séries = Pediátrico / Adulto / Idoso
-   ==================================================== */
-function renderChartEtarioRisco(etarioRisco) {
-  const ctx    = freshCanvas('etarioRisco');
-  const xLabels = ['P0 Emergência','P1 Urgência','P2 Não Urgente','P3 Eletivo'];
-  const ageGroups = ['Pediátrico','Adulto','Idoso'];
-  const ageColors = { 'Pediátrico': '#34d399', 'Adulto': '#10b981', 'Idoso': '#047857' };
-  const datasets = ageGroups.map(grp => ({
-    label: grp,
-    data: [0,1,2,3].map(k => etarioRisco[k][grp]),
-    backgroundColor: ageColors[grp] + 'cc',
-    borderColor: ageColors[grp],
-    borderWidth: 1.5,
-    borderRadius: 5,
-    borderSkipped: false,
-  }));
-  charts.etarioRisco = new Chart(ctx, {
-    type: 'bar',
-    data: { labels: xLabels, datasets },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { labels: { color: '#9ca3af', font: { size: 10 }, boxWidth: 12 } },
-        tooltip: { mode: 'index', intersect: false },
-      },
-      scales: {
-        x: { ticks: { color: '#9ca3af', font: { size: 9 } }, grid: { color: 'rgba(16,185,129,0.08)' } },
-        y: { beginAtZero: true, ticks: { color: '#9ca3af' }, grid: { color: 'rgba(16,185,129,0.08)' } },
-      },
-    },
-  });
-}
-
-/* ====================================================
-   TABELA – controle de view e busca
+   TABELA
    ==================================================== */
 function setView(mode) {
   viewMode = mode;
-  document.getElementById('btnByProc').classList.toggle('active', mode === 'proc');
-  document.getElementById('btnByPat').classList.toggle('active',  mode === 'patient');
+  document.getElementById('btnByProc').classList.toggle('active', mode==='proc');
+  document.getElementById('btnByPat').classList.toggle('active',  mode==='patient');
   renderTable();
 }
+function onSearch() { searchTerm = document.getElementById('tableSearch').value.trim().toLowerCase(); renderTable(); }
+function renderTable() { if (!allData.length) return; viewMode==='proc' ? renderTableProc() : renderTablePatient(); }
 
-function onSearch() {
-  searchTerm = document.getElementById('tableSearch').value.trim().toLowerCase();
-  renderTable();
-}
-
-function renderTable() {
-  if (!allData.length) return;
-  viewMode === 'proc' ? renderTableProc() : renderTablePatient();
-}
-
-/* Tabela por procedimento */
 function renderTableProc() {
-  let rows = [...procStats].sort((a, b) => b.media - a.media);
-
-  if (searchTerm) {
-    rows = rows.filter(p =>
-      p.nome.toLowerCase().includes(searchTerm) ||
-      String(p.qtd).includes(searchTerm) ||
-      p.media.toFixed(1).includes(searchTerm)
-    );
-  }
-
+  let rows = [...procStats].sort((a,b)=>b.media-a.media);
+  if (searchTerm) rows = rows.filter(p => p.nome.toLowerCase().includes(searchTerm)||String(p.qtd).includes(searchTerm)||p.media.toFixed(1).includes(searchTerm));
   document.getElementById('tableCount').textContent = `${rows.length} procedimento(s)`;
-
   if (!rows.length) { emptyTable('Nenhum procedimento encontrado.'); return; }
-
-  let html = `<table><thead><tr>
-    <th>#</th><th>Procedimento</th><th>Qtde em Fila</th><th>Tempo Médio (dias)</th>
-  </tr></thead><tbody>`;
-
-  rows.forEach((p, i) => {
-    const rank = i + 1;
-    const cls  = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : 'rank-other';
-    html += `<tr>
-      <td><span class="rank-badge ${cls}">${rank}</span></td>
-      <td>${escHtml(p.nome)}</td>
+  let html=`<table><thead><tr><th>#</th><th>Procedimento</th><th>Qtde em Fila</th><th>Tempo Médio (dias)</th></tr></thead><tbody>`;
+  rows.forEach((p,i)=>{
+    const r=i+1, cls=r===1?'rank-1':r===2?'rank-2':r===3?'rank-3':'rank-other';
+    html+=`<tr><td><span class="rank-badge ${cls}">${r}</span></td><td>${escHtml(p.nome)}</td>
       <td style="text-align:center;color:var(--text-secondary)">${p.qtd}</td>
-      <td style="text-align:center;color:var(--emerald);font-weight:600">${p.media.toFixed(1)}</td>
-    </tr>`;
+      <td style="text-align:center;color:var(--emerald);font-weight:600">${p.media.toFixed(1)}</td></tr>`;
   });
-
-  html += '</tbody></table>';
-  document.getElementById('tableContainer').innerHTML = html;
+  document.getElementById('tableContainer').innerHTML = html+'</tbody></table>';
 }
 
-/* Tabela por paciente */
 function renderTablePatient() {
   let rows = allData;
-
-  if (searchTerm) {
-    rows = rows.filter(r =>
-      Object.values(r).some(v =>
-        v !== null && String(v).toLowerCase().includes(searchTerm)
-      )
-    );
-  }
-
+  if (searchTerm) rows = rows.filter(r => Object.values(r).some(v => v!==null&&String(v).toLowerCase().includes(searchTerm)));
   document.getElementById('tableCount').textContent = `${rows.length} paciente(s)`;
-
   if (!rows.length) { emptyTable('Nenhum paciente encontrado.'); return; }
-
-  let html = `<table><thead><tr>
-    <th>#</th><th>Paciente</th><th>Idade</th><th>Risco</th><th>Procedimento</th><th>CID</th><th>Dias em Espera</th>
-  </tr></thead><tbody>`;
-
-  rows.forEach((r, i) => {
-    const rKey  = parseRisco(r);
-    const pill  = riskPill(rKey, r['Risco']);
-    const dias  = Number(r['Dias em Espera']);
-    const diasColor = isNaN(dias) ? 'var(--text-muted)'
-      : dias > 90 ? '#ef4444' : dias > 60 ? '#f59e0b' : 'var(--emerald)';
-
-    html += `<tr>
-      <td style="color:var(--text-muted);font-size:0.72rem">${i + 1}</td>
-      <td>${escHtml(r['Paciente'] || '—')}</td>
-      <td style="color:var(--text-secondary)">${escHtml(r['Idade Paciente'] || '—')}</td>
-      <td>${pill}</td>
-      <td style="font-size:0.78rem">${escHtml(r['Procedimento'] || '—')}</td>
-      <td style="color:var(--text-muted)">${escHtml(r['CID'] || '—')}</td>
-      <td style="color:${diasColor};font-weight:600;text-align:center">${isNaN(dias) ? '—' : dias}</td>
+  let html=`<table><thead><tr><th>#</th><th>Paciente</th><th>Idade</th><th>Risco</th><th>Procedimento</th><th>CID</th><th>Dias em Espera</th></tr></thead><tbody>`;
+  rows.forEach((r,i)=>{
+    const rKey=parseRisco(r), dias=Number(r['Dias em Espera']);
+    const dc=isNaN(dias)?'var(--text-muted)':dias>90?'#ef4444':dias>60?'#f59e0b':'var(--emerald)';
+    html+=`<tr>
+      <td style="color:var(--text-muted);font-size:0.7rem">${i+1}</td>
+      <td>${escHtml(r['Paciente']||'—')}</td>
+      <td style="color:var(--text-secondary);white-space:nowrap">${escHtml(r['Idade Paciente']||'—')}</td>
+      <td>${riskPill(rKey)}</td>
+      <td style="font-size:0.76rem">${escHtml(r['Procedimento']||'—')}</td>
+      <td style="color:var(--text-muted)">${escHtml(r['CID']||'—')}</td>
+      <td style="color:${dc};font-weight:600;text-align:center">${isNaN(dias)?'—':dias}</td>
     </tr>`;
   });
-
-  html += '</tbody></table>';
-  document.getElementById('tableContainer').innerHTML = html;
+  document.getElementById('tableContainer').innerHTML = html+'</tbody></table>';
 }
 
-/* Gera HTML da pílula de risco */
-function riskPill(key, rawVal) {
-  if (key === null) {
-    return `<span class="risk-pill risk-pill-null">
-      <span class="risk-pill-dot" style="background:#6b7280"></span>
-      ${escHtml(String(rawVal ?? 'N/C').slice(0, 12))}
-    </span>`;
-  }
-  const cfg = RISK_CFG[key];
-  return `<span class="risk-pill risk-pill-${key}">
-    <span class="risk-pill-dot" style="background:${cfg.dot}"></span>
-    ${escHtml(cfg.label)}
-  </span>`;
+function riskPill(key) {
+  if (key===null) return `<span class="risk-pill risk-pill-null"><span class="risk-pill-dot" style="background:#6b7280"></span>N/C</span>`;
+  const cfg=RISK_CFG[key];
+  return `<span class="risk-pill risk-pill-${key}"><span class="risk-pill-dot" style="background:${cfg.dot}"></span>${escHtml(cfg.label)}</span>`;
 }
 
 function emptyTable(msg) {
-  document.getElementById('tableContainer').innerHTML =
-    `<div class="empty-state"><div class="icon">🔍</div><p>${msg}</p></div>`;
+  document.getElementById('tableContainer').innerHTML=`<div class="empty-state"><div class="icon">🔍</div><p>${msg}</p></div>`;
 }
 
 /* ====================================================
    UTILITÁRIOS
    ==================================================== */
-function abbrev(str, max) {
-  return str.length <= max ? str : str.slice(0, max - 1) + '…';
-}
-function escHtml(str) {
-  return String(str)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-function showError(msg) {
-  const el = document.getElementById('errorMsg');
-  el.textContent = '⚠️ ' + msg;
-  el.classList.add('show');
-}
-function hideError() {
-  document.getElementById('errorMsg').classList.remove('show');
-}
+function abbrev(str, max) { return str.length<=max ? str : str.slice(0,max-1)+'…'; }
+function escHtml(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function showError(msg) { const el=document.getElementById('errorMsg'); el.textContent='⚠️ '+msg; el.classList.add('show'); }
+function hideError()    { document.getElementById('errorMsg').classList.remove('show'); }
 </script>
 </body>
 </html>
